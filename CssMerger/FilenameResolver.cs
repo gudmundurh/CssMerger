@@ -1,27 +1,44 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace CssMerger
 {
     internal static class FilenameResolver
     {
-        public static string ResolveFilename(string filename, string relativeToPath)
+        public static string ResolveFilename(string filename, string relativeToFilename)
         {
-            if (String.IsNullOrEmpty(relativeToPath))
-                return Path.GetFullPath(filename);
+            return Resolve(relativeToFilename, filename, Path.DirectorySeparatorChar);
+        }
 
-            if (!Path.IsPathRooted(relativeToPath))
-                throw new ArgumentException("'relativeToPath' cannot be relative");
+        public static string ResolveUrl(string url, string relativeToUrl)
+        {
+            return Resolve(relativeToUrl, url, '/');
+        }
 
-            filename = filename.Replace('/', Path.DirectorySeparatorChar);
+        private static string Resolve(string relativeToFilename, string filename, char outputPathSeparator)
+        {
+            var baseParts = new List<string>(relativeToFilename.Split(outputPathSeparator));
+            var filenameParts = new List<string>(filename.Split('/'));
 
-            
+            if (baseParts.Count <= 1)
+                return filename;
 
-            Path.GetPathRoot()
+            baseParts.RemoveAt(baseParts.Count - 1);
 
-            while (filename.StartsWith("../"))
-            
-            return filename;
-        } 
+            foreach (string part in filenameParts)
+            {
+                if (part == "..")
+                {
+                    if (baseParts.Count > 0)
+                        baseParts.RemoveAt(baseParts.Count - 1);
+                }
+                else
+                {
+                    baseParts.Add(part);
+                }
+            }
+
+            return string.Join(new string(outputPathSeparator, 1), baseParts.ToArray());
+        }
     }
 }

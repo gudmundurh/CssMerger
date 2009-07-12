@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CssMerger.Tests
 {
@@ -43,12 +44,27 @@ namespace CssMerger.Tests
         public void ResolveFilenameTest()
         {
             TestResolveFilename("main.css", "", "main.css");
-            TestResolveFilename("../main.css", "c:\\css", "c:\\main.css");
+            TestResolveFilename("../main.css", @"c:\css\abc.css", @"c:\main.css");
+            TestResolveFilename("lib/main.css", @"c:\css\abc.css", @"c:\css\lib\main.css");
         }
 
-        public void TestResolveFilename(string filename, string path, string expected)
+        [TestMethod]
+        public void ResolveUrlTest()
         {
-            Assert.AreEqual(expected, FilenameResolver.ResolveFilename(filename, path));
+            TestResolveUrl("main.css", "", "main.css");
+            TestResolveUrl("../main.css", "file.css", "../main.css");
+            TestResolveUrl("a.css", "../x.css", "../a.css");
+            TestResolveUrl("images/logo.gif", "header/header.css", "header/images/logo.gif");
+        }
+
+        private void TestResolveUrl(string url, string relativeToUrl, string expected)
+        {
+            Assert.AreEqual(expected, FilenameResolver.ResolveUrl(url, relativeToUrl));
+        }
+
+        public void TestResolveFilename(string filename, string relativeToFilename, string expected)
+        {
+            Assert.AreEqual(expected, FilenameResolver.ResolveFilename(filename, relativeToFilename));
         }
     }
 }
