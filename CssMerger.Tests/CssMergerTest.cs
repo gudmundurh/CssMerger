@@ -4,9 +4,6 @@ using Moq;
 
 namespace CssMerger.Tests
 {
-    /// <summary>
-    /// Summary description for CssMergerTest
-    /// </summary>
     [TestClass]
     public class CssMergerTest
     {
@@ -121,7 +118,7 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(new FileNotFoundException());
 
-            CssMerger cssMerger = new CssMerger(mock.Object);
+            var cssMerger = new CssMerger(mock.Object);
             cssMerger.RaiseErrors = true;
 
             // Act

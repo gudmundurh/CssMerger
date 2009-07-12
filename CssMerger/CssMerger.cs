@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CssMerger
@@ -58,6 +57,5 @@ namespace CssMerger
 
             return importRegex.Replace(css, m => Merge(m.Groups["url"].Value, inputFilename));
         }
-
     }
 }
