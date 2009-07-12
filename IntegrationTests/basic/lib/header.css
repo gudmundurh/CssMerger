@@ -1,0 +1,14 @@
+#header {
+	position: relative;
+}
+
+#header h2 {
+	background: url("header/logo.gif") no-repeat 0 0;
+	width: 100px;
+	height: 75px;
+	position: absolute;
+}
+
+#header h2 span {
+	display: none;
+}

@@ -1,0 +1,7 @@
+@import url("lib/typgraphy.css");
+@import url("lib/header.css");
+
+#page { 
+	width: 800px;
+	margin: 0 auto;
+}

@@ -5,12 +5,16 @@ namespace CssMerger
 {
     public class CssMerger
     {
-        private static readonly Regex importRegex = new Regex(
-            " @import \\s+ (?:                           " +
-            "    url \\( (['\"]) (?<url>[^\\1]*) \\1 \\) " + // Match url() with quoted contents
-            "  | url \\(         (?<url>[^\\)]*)     \\) " + // Match url() without quotes
-            "  |         (['\"]) (?<url>[^\\2]*) \\2     " + // Match quoted url, without url()
-            " ) \\s* ;                                   ", RegexOptions.IgnorePatternWhitespace);
+        private static readonly Regex importRegex =
+            new Regex(
+                @"
+                    @import \s+ (?:                           
+                        url \( (['""]) (?<url>.*?) \1 \)  # Match url() with quoted contents
+                      | url \(         (?<url>.*?)    \)  # Match url() without quotes
+                      |        (['""]) (?<url>.*?) \2     # Match quoted url, without url()
+                    ) \s* ;
+                ",
+                RegexOptions.IgnorePatternWhitespace);
 
         private IFileManager fileManager;
 
@@ -20,6 +24,12 @@ namespace CssMerger
         }
 
         public bool RaiseErrors { get; set; }
+
+        public static void MergeCss(string inputFilename, string outputFilename)
+        {
+            var cssMerger = new CssMerger(new FileManager());
+            cssMerger.MergeAndWrite(inputFilename, outputFilename);
+        }
 
 
         public static void MergeCss(string inputFilename, string outputFilename, IFileManager fileManager)

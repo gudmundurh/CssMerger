@@ -7,7 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CssMerger.Tests", "CssMerge
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0041F134-C62E-4DC9-8F57-70A5F13FA237}"
 	ProjectSection(SolutionItems) = preProject
-		CssMerger.vsmdi = CssMerger.vsmdi
 		CssMerger1.vsmdi = CssMerger1.vsmdi
 		CssMerger2.vsmdi = CssMerger2.vsmdi
 		CssMerger3.vsmdi = CssMerger3.vsmdi
@@ -15,8 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CssMerger5.vsmdi = CssMerger5.vsmdi
 		LICENSE.txt = LICENSE.txt
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
-		README.txt = README.txt
+		README.textile = README.textile
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CssMergerApp", "CssMergerApp\CssMergerApp.csproj", "{86584D23-4E36-4A7A-B422-0492BACC952E}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -35,6 +36,10 @@ Global
 		{74964CEA-07B4-4170-9CEC-493A7FFF55C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74964CEA-07B4-4170-9CEC-493A7FFF55C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74964CEA-07B4-4170-9CEC-493A7FFF55C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86584D23-4E36-4A7A-B422-0492BACC952E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86584D23-4E36-4A7A-B422-0492BACC952E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86584D23-4E36-4A7A-B422-0492BACC952E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86584D23-4E36-4A7A-B422-0492BACC952E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

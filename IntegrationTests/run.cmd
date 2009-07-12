@@ -1,0 +1,1 @@
+..\CssMergerApp\bin\debug\CssMergerApp.exe %1\main.css %1-merged.css

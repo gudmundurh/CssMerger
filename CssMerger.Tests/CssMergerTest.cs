@@ -87,9 +87,9 @@ namespace CssMerger.Tests
         {
             // Arrange
             var mock = new Mock<IFileManager>();
-            string mainFileCss = "@import url('sub.css');";
+            string mainFileCss = "@import url('sub.css'); h1 { color: red; }";
             string subFileCss = "div.sub { color: cyan }";
-            string expectedCss = subFileCss;
+            string expectedCss = subFileCss + " h1 { color: red; }";
 
             mock.Setup(manager => manager.ReadFile("main.css")).Returns(mainFileCss);
             mock.Setup(manager => manager.ReadFile("sub.css")).Returns(subFileCss);
@@ -105,13 +105,65 @@ namespace CssMerger.Tests
             Assert.AreEqual(expectedCss, outputCss);
         }
 
+        [TestMethod]
+        public void TestMultipleImports()
+        {
+            // Arrange
+            var mock = new Mock<IFileManager>();
+            string mainFileCss = "@import url(\"sub.css\");\n@import url(abc.css);";
+            string subFileCss = "div.sub { color: cyan }";
+            string abcFileCss = "a img { border 0; }";
+            string expectedCss = subFileCss + "\n" + abcFileCss;
+
+            mock.Setup(manager => manager.ReadFile("main.css")).Returns(mainFileCss);
+            mock.Setup(manager => manager.ReadFile("sub.css")).Returns(subFileCss);
+            mock.Setup(manager => manager.ReadFile("abc.css")).Returns(abcFileCss);
+
+            string outputCss = null;
+            mock.Setup(manager => manager.WriteFile("out.css", It.IsAny<string>()))
+                .Callback((string filename, string contents) => outputCss = contents);
+
+            // Act
+            CssMerger.MergeCss("main.css", "out.css", mock.Object);
+
+            // Assert
+            Assert.AreEqual(expectedCss, outputCss);
+        }
+
+        [TestMethod]
+        public void TestNestedImports()
+        {
+            // Arrange
+            var mock = new Mock<IFileManager>();
+            string mainFileCss = "@import url(\"sub.css\");\n@import url(\"abc.css\");";
+            string subFileCss = "@import url(\"lib/typography.css\"); div.sub { color: cyan }";
+            string typoFileCss = "body { font-family: Arial; }";
+            string abcFileCss = "a img { border 0; }";
+            string expectedCss = typoFileCss + " div.sub { color: cyan }\n" + abcFileCss;
+
+            mock.Setup(manager => manager.ReadFile("c:\\css\\main.css")).Returns(mainFileCss);
+            mock.Setup(manager => manager.ReadFile("c:\\css\\sub.css")).Returns(subFileCss);
+            mock.Setup(manager => manager.ReadFile("c:\\css\\abc.css")).Returns(abcFileCss);
+            mock.Setup(manager => manager.ReadFile("c:\\css\\lib\\typography.css")).Returns(typoFileCss);
+
+            string outputCss = null;
+            mock.Setup(manager => manager.WriteFile("out.css", It.IsAny<string>()))
+                .Callback((string filename, string contents) => outputCss = contents);
+
+            // Act
+            CssMerger.MergeCss("c:\\css\\main.css", "out.css", mock.Object);
+
+            // Assert
+            Assert.AreEqual(expectedCss, outputCss);
+        }
+
 
         [TestMethod]
         public void TestImportingNonExistingFile()
         {
             // Arrange
             var mock = new Mock<IFileManager>();
-            string mainFileCss = "@import url(\"sub.css\");";
+            string mainFileCss = "@import url(\"sub.css\"); h1 { color: red; }";
 
             mock.Setup(manager => manager.ReadFile("main.css")).Returns(mainFileCss);
 
