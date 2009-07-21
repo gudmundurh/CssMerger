@@ -5,31 +5,46 @@ namespace CssMerger.Tests
     [TestFixture]
     public class FilenameResolverTest
     {
-        private void TestResolveUrl(string url, string relativeToUrl, string expected)
+        private void TestResolveUrl(string url, string currentPath, string outputPath, string expectedUrl)
         {
-            Assert.AreEqual(expected, FilenameResolver.ResolveUrl(url, relativeToUrl));
+            Assert.AreEqual(expectedUrl, FilenameResolver.GetUrlRelativeToOutputPath(url, currentPath, outputPath));
         }
 
         public void TestResolveFilename(string filename, string relativeToFilename, string expected)
         {
-            Assert.AreEqual(expected, FilenameResolver.ResolveFilename(filename, relativeToFilename));
+            Assert.AreEqual(expected, FilenameResolver.GetFilenameFromUrl(filename, relativeToFilename));
         }
 
         [Test]
         public void ResolveFilename()
         {
-            TestResolveFilename("main.css", "", "main.css");
-            TestResolveFilename("../main.css", @"c:\css\abc.css", @"c:\main.css");
-            TestResolveFilename("lib/main.css", @"c:\css\abc.css", @"c:\css\lib\main.css");
+            TestResolveFilename("abc.css", @"c:\", @"c:\abc.css");
+            TestResolveFilename("../main.css", @"c:\css", @"c:\main.css");
+            TestResolveFilename("lib/main.css", @"c:\css", @"c:\css\lib\main.css");
+
+            // TODO: Add test for absolute URL
         }
 
         [Test]
         public void ResolveUrl()
         {
-            TestResolveUrl("main.css", "", "main.css");
-            TestResolveUrl("../main.css", "file.css", "../main.css");
-            TestResolveUrl("a.css", "../x.css", "../a.css");
-            TestResolveUrl("images/logo.gif", "header/header.css", "header/images/logo.gif");
+            string root = @"c:\css";
+
+            TestResolveUrl("images/k.gif", @"c:\css", root, "images/k.gif");
+            TestResolveUrl("images/k.gif", @"c:\css\nested", root, "nested/images/k.gif");
+            TestResolveUrl("../a.png", @"c:\css\nested", root, "a.png");
+            TestResolveUrl("../images/a.png", @"c:\css\nested", root, "images/a.png");
+
+            TestResolveUrl("main.css", @"C:\CSS", root, "main.css");
+
+            TestResolveUrl("main.css", @"c:\css", root, "main.css");
+            TestResolveUrl("../main.css", @"c:\css", root, "../main.css");
+            TestResolveUrl("a.css", @"c:\othercss", root, "../othercss/a.css");
+            TestResolveUrl("images/logo.gif", @"c:\css\header", root, "header/images/logo.gif");
+            
+            TestResolveUrl("/logo.gif", @"c:\css\header", root, "/logo.gif");
         }
+
+
     }
 }
