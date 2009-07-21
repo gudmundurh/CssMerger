@@ -1,12 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CssMerger
 {
     public class CssMerger
     {
-        private static readonly Regex importRegex =
+        private static readonly Regex ImportRegex =
             new Regex(
                 @"
                     @import \s+ (?:                           
@@ -17,10 +16,10 @@ namespace CssMerger
                 ",
                 RegexOptions.IgnorePatternWhitespace);
 
-        private static readonly Regex propertyUrlRegex =
+        private static readonly Regex PropertyUrlRegex =
             new Regex(
                 @"
-                    (?<= : [^:;}]* )         # Assert that we are in a property
+                    (?<= : [^:;}]* )         # Look-behind to assert that we are in a property
                     (?:
                         url \( (['""]) (?<url>.*?) \1 \)  # Match url() with quoted contents
                       | url \(         (?<url>.*?)    \)  # Match url() without quotes
@@ -55,11 +54,8 @@ namespace CssMerger
         {
             string outputPath = new FileInfo(outputFilename).DirectoryName;
             var inputFileInfo = new FileInfo(inputFilename);
-            string startUrl = FilenameResolver.GetUrlRelativeToOutputPath(
-                inputFileInfo.Name,
-                inputFileInfo.DirectoryName,
-                outputPath
-                );
+            string startUrl = FilenameResolver.GetUrlRelativeToOutputPath(inputFileInfo.Name,
+                                                                          inputFileInfo.DirectoryName, outputPath);
 
             fileManager.WriteFile(outputFilename, Merge(startUrl, outputPath, outputPath));
         }
@@ -85,9 +81,9 @@ namespace CssMerger
             if (css == null)
                 return string.Format("/* CssMerger: {0} missing */", url);
 
-            css = propertyUrlRegex.Replace(css, m => ResolvePropertyUrl(m.Groups["url"].Value, filenamePath, outputPath));
+            css = PropertyUrlRegex.Replace(css, m => ResolvePropertyUrl(m.Groups["url"].Value, filenamePath, outputPath));
 
-            return importRegex.Replace(css, m => Merge(m.Groups["url"].Value, filenamePath, outputPath));
+            return ImportRegex.Replace(css, m => Merge(m.Groups["url"].Value, filenamePath, outputPath));
         }
 
 

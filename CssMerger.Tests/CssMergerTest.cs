@@ -138,6 +138,27 @@ namespace CssMerger.Tests
         }
 
         [Test]
+        public void ResolvingPathsToImages()
+        {
+            // Arrange
+            var mock = new Mock<IFileManager>();
+            const string inputCss = "body { background: url(images/background.gif) }";
+            const string expectedCss = "body { background: url(css/images/background.gif) }";
+
+            mock.Setup(manager => manager.ReadFile(@"c:\css\main.css")).Returns(inputCss);
+
+            string actualCss = null;
+            mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
+                .Callback((string filename, string contents) => actualCss = contents);
+
+            // Act
+            CssMerger.MergeCss(@"c:\css\main.css", @"c:\out.css", mock.Object);
+
+            // Assert
+            Assert.AreEqual(expectedCss, actualCss);
+        }
+
+        [Test]
         public void SimplePassthrough()
         {
             // Arrange
@@ -188,27 +209,6 @@ namespace CssMerger.Tests
         }
 
         [Test]
-        public void ResolvingPathsToImages()
-        {
-            // Arrange
-            var mock = new Mock<IFileManager>();
-            const string inputCss = "body { background: url(images/background.gif) }";
-            const string expectedCss = "body { background: url(css/images/background.gif) }";
-
-            mock.Setup(manager => manager.ReadFile(@"c:\css\main.css")).Returns(inputCss);
-            
-            string actualCss = null;
-            mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
-                .Callback((string filename, string contents) => actualCss = contents);
-
-            // Act
-            CssMerger.MergeCss(@"c:\css\main.css", @"c:\out.css", mock.Object);
-
-            // Assert
-            Assert.AreEqual(expectedCss, actualCss);
-        }
-
-        [Test]
         public void ThatImportAndAssetUrlsAreNotMixed()
         {
             // Arrange
@@ -219,7 +219,7 @@ namespace CssMerger.Tests
 
             mock.Setup(manager => manager.ReadFile(@"c:\css\main.css")).Returns(mainCss);
             mock.Setup(manager => manager.ReadFile(@"c:\css\sub.css")).Returns(subCss);
-            
+
             string actualCss = null;
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => actualCss = contents);
@@ -230,7 +230,5 @@ namespace CssMerger.Tests
             // Assert
             Assert.AreEqual(expectedCss, actualCss);
         }
-
-
     }
 }

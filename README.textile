@@ -2,6 +2,8 @@ h2. CSS Merger
 
 The merger follows CSS @import statements and merges imported files into the main file. This allows for dividing CSS files into manageable logical units, but serving a single CSS file at production, thus not sacrifying performance.
 
+The merger takes care to rewrite relative paths to images.
+
 A simple command line application is included (CssMergerApp), but the merger can also be used programatically, most easily by referencing CssMerger and writing
 
 <pre>
@@ -10,4 +12,11 @@ CssMerger.MergeCss(inputFilename, outputFilename);
 
 h2. Notes on @import
 
-Internet Explorer only allows for 32 @import's in each file. Also, although I've not verified it, it only allows for 3 or 4 levels of nested inheritance. This applies at least to versions 6 and 7. Luckily, thanks to the merging process, this should only be problem while developing.
+Internet Explorer only allows for 32 @import's in each file. Also, it supposedly only allows for 3 or 4 levels of nested inheritance. This applies at least to versions 6 and 7. Luckily, thanks to the merging process, this should only be problem while developing.
+
+"See more here.":http://www.agum.com/web/2008/03/11/internet-explorer-issue-maximum-of-32-css-import/
+
+h2. TODO
+
+* Add support for absolute paths to CSS files. This though requires the merger to know the web site's root, which is doesn't need currently.
+* Make the command line app more intelligent.

@@ -5,14 +5,14 @@ namespace CssMerger.Tests
     [TestFixture]
     public class FilenameResolverTest
     {
-        private void TestResolveUrl(string url, string currentPath, string outputPath, string expectedUrl)
+        private static void TestResolveUrl(string url, string currentPath, string outputPath, string expectedUrl)
         {
             Assert.AreEqual(expectedUrl, FilenameResolver.GetUrlRelativeToOutputPath(url, currentPath, outputPath));
         }
 
-        public void TestResolveFilename(string filename, string relativeToFilename, string expected)
+        public static void TestResolveFilename(string filename, string currentPath, string expected)
         {
-            Assert.AreEqual(expected, FilenameResolver.GetFilenameFromUrl(filename, relativeToFilename));
+            Assert.AreEqual(expected, FilenameResolver.GetFilenameFromUrl(filename, currentPath));
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace CssMerger.Tests
         [Test]
         public void ResolveUrl()
         {
-            string root = @"c:\css";
+            const string root = @"c:\css";
 
             TestResolveUrl("images/k.gif", @"c:\css", root, "images/k.gif");
             TestResolveUrl("images/k.gif", @"c:\css\nested", root, "nested/images/k.gif");
@@ -41,10 +41,8 @@ namespace CssMerger.Tests
             TestResolveUrl("../main.css", @"c:\css", root, "../main.css");
             TestResolveUrl("a.css", @"c:\othercss", root, "../othercss/a.css");
             TestResolveUrl("images/logo.gif", @"c:\css\header", root, "header/images/logo.gif");
-            
+
             TestResolveUrl("/logo.gif", @"c:\css\header", root, "/logo.gif");
         }
-
-
     }
 }

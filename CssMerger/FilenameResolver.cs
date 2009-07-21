@@ -18,8 +18,12 @@ namespace CssMerger
                 if (part == "..")
                 {
                     if (pathParts.Count == 0)
-                        throw new Exception(string.Format("Can't get filename from url={0} for path={1}, too many ../", url, currentPath));
-                    
+                    {
+                        throw new ArgumentException(
+                            string.Format("Can't get filename for url={0} relative to path={1}, too many ../",
+                                          url, currentPath));
+                    }
+
                     pathParts.RemoveAt(pathParts.Count - 1);
                 }
                 else
@@ -31,6 +35,7 @@ namespace CssMerger
             return string.Join(new string(Path.DirectorySeparatorChar, 1), pathParts.ToArray());
         }
 
+
         private static string[] SplitPath(string path)
         {
             return path.Trim(Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar);
@@ -40,7 +45,7 @@ namespace CssMerger
         public static string GetUrlRelativeToOutputPath(string url, string currentPath, string outputPath)
         {
             if (!Path.IsPathRooted(currentPath))
-                throw new ArgumentException("currentPath must be rooted");            
+                throw new ArgumentException("currentPath must be rooted");
 
             if (!Path.IsPathRooted(outputPath))
                 throw new ArgumentException("outputPath must be rooted");
@@ -50,8 +55,8 @@ namespace CssMerger
             if (url.StartsWith("/"))
                 return url;
 
-            var currentPathParts = SplitPath(currentPath);
-            var outputPathParts = SplitPath(outputPath);
+            string[] currentPathParts = SplitPath(currentPath);
+            string[] outputPathParts = SplitPath(outputPath);
 
             int sameCounter = 0;
             for (int i = 0; i < Math.Min(currentPathParts.Length, outputPathParts.Length); i++)
