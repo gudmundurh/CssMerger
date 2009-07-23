@@ -27,63 +27,39 @@ namespace CssMerger
                 ",
                 RegexOptions.IgnorePatternWhitespace);
 
-        private IFileManager fileManager;
+        private readonly IFileManager _fileManager;
+
+        public CssMerger() : this(new FileManager())
+        {
+        }
 
         public CssMerger(IFileManager fileManager)
         {
-            this.fileManager = fileManager;
+            _fileManager = fileManager;
         }
 
-        public bool RaiseErrors { get; set; }
-
-        public static void MergeCss(string inputFilename, string outputFilename)
-        {
-            var cssMerger = new CssMerger(new FileManager());
-            cssMerger.MergeAndWrite(inputFilename, outputFilename);
-        }
-
-
-        public static void MergeCss(string inputFilename, string outputFilename, IFileManager fileManager)
-        {
-            var cssMerger = new CssMerger(fileManager);
-            cssMerger.MergeAndWrite(inputFilename, outputFilename);
-        }
-
-
-        public void MergeAndWrite(string inputFilename, string outputFilename)
+        public void MergeCss(string inputFilename, string outputFilename)
         {
             string outputPath = new FileInfo(outputFilename).DirectoryName;
             var inputFileInfo = new FileInfo(inputFilename);
             string startUrl = FilenameResolver.GetUrlRelativeToOutputPath(inputFileInfo.Name,
                                                                           inputFileInfo.DirectoryName, outputPath);
 
-            fileManager.WriteFile(outputFilename, Merge(startUrl, outputPath, outputPath));
+            _fileManager.WriteFile(outputFilename, Merge(startUrl, outputPath, outputPath));
         }
-
 
         private string Merge(string url, string currentPath, string outputPath)
         {
             string filename = FilenameResolver.GetFilenameFromUrl(url, currentPath);
             string filenamePath = new FileInfo(filename).DirectoryName;
 
-            string css = null;
+            string css = _fileManager.ReadFile(filename);
 
-            try
-            {
-                css = fileManager.ReadFile(filename);
-            }
-            catch (FileNotFoundException exception)
-            {
-                if (RaiseErrors)
-                    throw exception;
-            }
+            css = PropertyUrlRegex.Replace(css,
+                                           match =>
+                                           ResolvePropertyUrl(match.Groups["url"].Value, filenamePath, outputPath));
 
-            if (css == null)
-                return string.Format("/* CssMerger: {0} missing */", url);
-
-            css = PropertyUrlRegex.Replace(css, m => ResolvePropertyUrl(m.Groups["url"].Value, filenamePath, outputPath));
-
-            return ImportRegex.Replace(css, m => Merge(m.Groups["url"].Value, filenamePath, outputPath));
+            return ImportRegex.Replace(css, match => Merge(match.Groups["url"].Value, filenamePath, outputPath));
         }
 
 

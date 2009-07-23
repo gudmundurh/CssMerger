@@ -9,7 +9,10 @@ namespace CssMerger
         public static string GetFilenameFromUrl(string url, string currentPath)
         {
             if (!Path.IsPathRooted(currentPath))
-                throw new ArgumentException("currentPath must be rooted");
+                throw new ArgumentException("currentPath must be rooted", "currentPath");
+
+            if (url.Trim().StartsWith("/"))
+                throw new ArgumentException("url must be relative", "url");
 
             var pathParts = new List<string>(SplitPath(currentPath));
 
@@ -21,7 +24,7 @@ namespace CssMerger
                     {
                         throw new ArgumentException(
                             string.Format("Can't get filename for url={0} relative to path={1}, too many ../",
-                                          url, currentPath));
+                                          url, currentPath), "url");
                     }
 
                     pathParts.RemoveAt(pathParts.Count - 1);
@@ -45,10 +48,10 @@ namespace CssMerger
         public static string GetUrlRelativeToOutputPath(string url, string currentPath, string outputPath)
         {
             if (!Path.IsPathRooted(currentPath))
-                throw new ArgumentException("currentPath must be rooted");
+                throw new ArgumentException("currentPath must be rooted", "currentPath");
 
             if (!Path.IsPathRooted(outputPath))
-                throw new ArgumentException("outputPath must be rooted");
+                throw new ArgumentException("outputPath must be rooted", "outputPath");
 
             url = url.Trim();
 

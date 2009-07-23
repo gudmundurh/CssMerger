@@ -12,21 +12,20 @@ namespace CssMerger.Tests
         {
             // Arrange
             var mock = new Mock<IFileManager>();
-            string mainFileCss = "@import url(\"sub.css\"); h1 { color: red; }";
+            string mainFileCss = "@import url(\"nonExistingFile.css\"); h1 { color: red; }";
 
             mock.Setup(manager => manager.ReadFile(@"c:\main.css")).Returns(mainFileCss);
 
-            mock.Setup(manager => manager.WriteFile(It.IsAny<string>(), It.IsAny<string>()))
+            mock.Setup(manager => manager.ReadFile(@"c:\nonExistingFile.css"))
                 .Throws(new FileNotFoundException());
 
-            var cssMerger = new CssMerger(mock.Object);
-            cssMerger.RaiseErrors = true;
+            var merger = new CssMerger(mock.Object);
 
             // Act
             FileNotFoundException exception = null;
             try
             {
-                cssMerger.MergeAndWrite(@"c:\main.css", @"c:\out.css");
+                merger.MergeCss(@"c:\main.css", @"c:\out.css");
             }
             catch (FileNotFoundException e)
             {
@@ -43,7 +42,7 @@ namespace CssMerger.Tests
         {
             // Arrange
             var mock = new Mock<IFileManager>();
-            string mainFileCss = "@import 'sub.css';";
+            string mainFileCss = "@import \"sub.css\";";
             string subFileCss = "div.sub { color: cyan }";
             string expectedCss = subFileCss;
 
@@ -54,13 +53,14 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => outputCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\main.css", @"c:\out.css", mock.Object);
+            merger.MergeCss(@"c:\main.css", @"c:\out.css");
 
             // Assert
             Assert.AreEqual(expectedCss, outputCss);
         }
-
 
         [Test]
         public void ImportWithUrlAndSingleQuotes()
@@ -78,8 +78,10 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => outputCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\main.css", @"c:\out.css", mock.Object);
+            merger.MergeCss(@"c:\main.css", @"c:\out.css");
 
             // Assert
             Assert.AreEqual(expectedCss, outputCss);
@@ -103,8 +105,10 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => outputCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\main.css", @"c:\out.css", mock.Object);
+            merger.MergeCss(@"c:\main.css", @"c:\out.css");
 
             // Assert
             Assert.AreEqual(expectedCss, outputCss);
@@ -130,8 +134,10 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\merged\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => outputCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\css\main.css", @"c:\merged\out.css", mock.Object);
+            merger.MergeCss(@"c:\css\main.css", @"c:\merged\out.css");
 
             // Assert
             Assert.AreEqual(expectedCss, outputCss);
@@ -151,8 +157,10 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => actualCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\css\main.css", @"c:\out.css", mock.Object);
+            merger.MergeCss(@"c:\css\main.css", @"c:\out.css");
 
             // Assert
             Assert.AreEqual(expectedCss, actualCss);
@@ -170,13 +178,14 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => outputCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\in.css", @"c:\out.css", mock.Object);
+            merger.MergeCss(@"c:\in.css", @"c:\out.css");
 
             // Assert
             Assert.AreEqual(inputCss, outputCss);
         }
-
 
         [Test]
         public void SingleImport()
@@ -201,8 +210,10 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => outputCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\main.css", @"c:\out.css", mock.Object);
+            merger.MergeCss(@"c:\main.css", @"c:\out.css");
 
             // Assert
             Assert.AreEqual(expectedCss, outputCss);
@@ -224,8 +235,10 @@ namespace CssMerger.Tests
             mock.Setup(manager => manager.WriteFile(@"c:\out.css", It.IsAny<string>()))
                 .Callback((string filename, string contents) => actualCss = contents);
 
+            var merger = new CssMerger(mock.Object);
+
             // Act
-            CssMerger.MergeCss(@"c:\css\main.css", @"c:\out.css", mock.Object);
+            merger.MergeCss(@"c:\css\main.css", @"c:\out.css");
 
             // Assert
             Assert.AreEqual(expectedCss, actualCss);

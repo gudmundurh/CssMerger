@@ -16,7 +16,8 @@ namespace CssMerger.Tests
         }
 
         [Test]
-        public void ResolveFilename()
+        [Category("Exploratory")]
+        public void GetFilenameFromUrl()
         {
             TestResolveFilename("abc.css", @"c:\", @"c:\abc.css");
             TestResolveFilename("../main.css", @"c:\css", @"c:\main.css");
@@ -26,7 +27,8 @@ namespace CssMerger.Tests
         }
 
         [Test]
-        public void ResolveUrl()
+        [Category("Exploratory")]
+        public void GetUrlRelativeToOutputPath()
         {
             const string root = @"c:\css";
 

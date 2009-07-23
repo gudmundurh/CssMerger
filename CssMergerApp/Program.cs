@@ -22,7 +22,7 @@ namespace CssMergerApp
                 return;
             }
 
-            CssMerger.CssMerger.MergeCss(inputFilename, outputFilename);
+            new CssMerger.CssMerger().MergeCss(inputFilename, outputFilename);
         }
 
         private static void Usage()

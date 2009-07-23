@@ -7,7 +7,7 @@ The merger takes care to rewrite relative paths to images.
 A simple command line application is included (CssMergerApp), but the merger can also be used programatically, most easily by referencing CssMerger and writing
 
 <pre>
-CssMerger.MergeCss(inputFilename, outputFilename);
+new CssMerger().MergeCss(inputFilename, outputFilename);
 </pre>
 
 h2. Notes on @import
