@@ -20,3 +20,4 @@ h2. TODO
 
 * Add support for absolute paths to CSS files. This though requires the merger to know the web site's root, which is doesn't need currently.
 * Make the command line app more intelligent.
+* Add Nuget packages
